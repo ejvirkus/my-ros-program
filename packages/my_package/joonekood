@@ -1,0 +1,52 @@
+def run(self):
+        range_1 = range(4, 33, 1)
+        range_5 = range(166, 254, 1)
+        range_4 = range(2, 3, 1)
+        range_3 = range(34, 165, 1)
+        range_2 = range(1, 2, 1)
+        rate = 0.3
+        
+        rate = rospy.Rate(15)
+        while not rospy.is_shutdown():
+
+            bus = SMBus(1)
+            b = bus.read_byte_data(62, 17)
+            print(b)
+            bus.close()
+
+            if b in range_1:
+
+               speed.vel_right = 0.3
+               speed.vel_left = 0.3
+
+            elif b in range_5:
+
+                speed.vel_right = -0.1
+                speed.vel_left = 0.3
+
+            elif b in range_4:
+
+                speed.vel_right = 0.3
+                speed.vel_left = 0.1
+            
+            elif b in range_3:
+                
+                speed.vel_right = 0.1
+                speed.vel_left = 0.3
+            
+            elif b in range_2:
+                
+                speed.vel_right = 0.3
+                speed.vel_left = -0.1
+
+            else:
+                if b == 0:
+                    speed.vel_right = -0.2
+                    speed.vel_left = -0.2
+            
+                elif b == 255:
+                    speed.vel_right = 0.2
+                    speed.vel_left = 0.2
+
+            self.pub.publish(speed)
+            rate.sleep()
