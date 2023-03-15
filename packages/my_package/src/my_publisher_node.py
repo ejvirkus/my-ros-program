@@ -9,6 +9,9 @@ from duckietown.dtros import DTROS, NodeType
 from smbus2 import SMBus
 from duckietown_msgs.msg import WheelsCmdStamped
 
+target_sensor_position = 4.5
+vehicle_speed = 0.5
+
 speed = WheelsCmdStamped()
 rospy_rate = 40
 error = 0 
@@ -18,10 +21,6 @@ Kp = 0
 Ki = 0
 Kd = 0
 I = 0
-
-speed = WheelsCmdStamped()
-error = 0
-last_error = 0
 
 turn_left_at_fork = False
 turn_right_at_fork = False
