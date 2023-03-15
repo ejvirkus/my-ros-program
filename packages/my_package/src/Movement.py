@@ -5,7 +5,15 @@ class Move_Node():
         self.velocity = velocity
         self.speed_right_wheel = velocity
         self.speed_left_wheel = velocity
+        self.fork_in_road = False
+        self.fork_in_road_conf = False
+        self.fork_go_left = False
+        self.fork_go_right = False
 
+    def move_stop(self):
+        print("Stopping")
+        self.speed_left_wheel = 0
+        self.speed_right_wheel = 0
     
     def move_turn_left(self):
         print("Turning left")
