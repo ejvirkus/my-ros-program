@@ -2,6 +2,7 @@
 
 #!/usr/bin/env python3
 
+import time
 import math
 import numpy as np 
 import os
@@ -9,8 +10,6 @@ import rospy
 from duckietown.dtros import DTROS, NodeType, TopicType, DTParam, ParamType
 from duckietown_msgs.msg import Twist2DStamped, WheelEncoderStamped, WheelsCmdStamped
 from std_msgs.msg import Header, Float32
-
-rate = rospy.Rate(1)
 
 class OdometryNode(DTROS):
 
@@ -35,6 +34,7 @@ class OdometryNode(DTROS):
         self.ticksR = data.data
 
     def OdometryNode(self):
+        rate = rospy.Rate(1)
         
         N_tot = 135 #Tickide arv ratta täispöördel
         alpha = 2*np.pi/N_tot

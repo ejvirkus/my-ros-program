@@ -11,7 +11,7 @@ class PID_Controller():
         self.I = I
         self.delta_t = rospy_rate
     
-    def apply_controller(self, car, err, last_error):
+    def apply_controller(self, Move_node, err, last_error):
         if err == 0:
             Move_Node.move_forward()
         else:
