@@ -3,32 +3,20 @@
 import rospy
 from default_movement import default_movement
 from Odometry import OdometryNode
-from Movement import Move_Node
-from PID_controller import PID_Controller
+import PID_controller
 from duckietown.dtros import DTROS, NodeType
-from smbus2 import SMBus
 from duckietown_msgs.msg import WheelsCmdStamped
 
 target_sensor_position = 4.5
-vehicle_speed = 0.5
+vehicle_speed = 0.1
 
 speed = WheelsCmdStamped()
-rospy_rate = 40
-error = 0 
-last_error = 0
-
-Kp = 0
-Ki = 0
-Kd = 0
-I = 0
+rospy_rate = 20
 
 turn_left_at_fork = False
 turn_right_at_fork = False
 roadsign_detected = False
 roadsign_confirmed = False
-
-car = Move_Node(vehicle_speed)
-pid_controller = PID_Controller(Kp, Ki, Kd, I, rospy_rate)
 
 
 class MyPublisherNode(DTROS):
@@ -43,17 +31,12 @@ class MyPublisherNode(DTROS):
         rospy.on_shutdown(self.shutdown)
 
     def shutdown(self):
-        Move_Node.move_stop
+        speed.vel_right = 0
+        speed.vel_left = 0
         self.pub.publish(speed)
         rospy.on_shutdown()
 
     def run(self):
-        bus = SMBus(1)
-        print("SMBus is: ", bus)
-
-        self.current_sensor_position = bus.read_byte_data(62, 17)
-        print("current position is: ", self.current_sensor_position)
-
         self.line_values = []
         for i, value in enumerate(self.theta_ref):
             if value == '1':
@@ -66,7 +49,11 @@ class MyPublisherNode(DTROS):
         rate = rospy.Rate(1)
         while not rospy.is_shutdown():
             OdometryNode(self)
-            PID_Controller.apply_controller()
+            speed.vel_left = vehicle_speed  + PID_controller.apply_controller()
+            speed.vel_right = vehicle_speed - PID_controller.apply_controller()
+            #print("omega is: ", PID_controller.apply_controller())
+            self.pub.publish(speed)
+
 
 
 if __name__ == '__main__':
