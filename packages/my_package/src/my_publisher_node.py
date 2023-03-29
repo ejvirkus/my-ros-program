@@ -8,10 +8,10 @@ from duckietown.dtros import DTROS, NodeType
 from duckietown_msgs.msg import WheelsCmdStamped
 
 target_sensor_position = 4.5
-vehicle_speed = 0.1
+vehicle_speed = 0.25
 
 speed = WheelsCmdStamped()
-rospy_rate = 20
+rospy_rate = 15
 
 turn_left_at_fork = False
 turn_right_at_fork = False

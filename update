@@ -1,0 +1,47 @@
+
+[33mdts : [0m Problems with a command?[0m
+[33m    : [0m [0m
+[33m    : [0m     Report here: [4m[34mhttps://github.com/duckietown/duckietown-shell-commands/issues[0m[0m
+[33m    : [0m [0m
+[33m    : [0m     Troubleshooting:[0m
+[33m    : [0m [0m
+[33m    : [0m     - If some commands update fail, delete ~/.dt-shell/commands[0m
+[33m    : [0m [0m
+[33m    : [0m     - To reset the shell to "factory settings", delete ~/.dt-shell[0m
+[33m    : [0m [0m
+[33m    : [0m       (Note: you will have to re-configure.)[0m
+[33m
+
+There is an updated duckietown-shell available.
+
+  You have: 5.4.4
+
+  Available: 5.4.5 
+ 
+WARNING: We strongly recommend updating to the latest version. ONLY THE LATEST VERSION IS SUPPORTED!
+         If you experience issues, please make sure you're using the latest version before posting questions or issues. 
+
+You can update the shell using `pip`. Run the following command:
+        pip3 install --no-cache-dir --user -U duckietown-shell
+
+        [0m
+
+[33mdts : [0m [1m[33mAn updated version of the commands is available.[0m
+[33m    : [0m [1m[33m[0m
+[33m    : [0m [1m[33mAttempting auto-update.[0m
+
+[33mdts : [0m Updating commands...[0m
+
+[33mdts : [0m OK[0m
+=============================================================================================================================================
+
+    Did you know that Duckietown originated from the halls of the Computer Science and Artificial Intelligence Laboratory of MIT in 2016?
+
+=============================================================================================================================================
+Welcome to the [1m[33mDuckietown Shell[0m (5.4.4).
+
+Type "help" or "?" to list commands.
+
+
+(Cmd) 
+[33mdts : [0m User aborted operation.[0m

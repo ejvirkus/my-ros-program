@@ -35,9 +35,9 @@ def apply_controller():
     #Kp = rospy.get_param("/p")
     #Ki = rospy.get_param("/i")
     #Kd = rospy.get_param("/d")
-    Kp = 0.1
-    Ki = 0.05
-    Kd = 0  
+    Kp = 0.25
+    Ki = 0.03
+    Kd = 0.5
     
     omega = Kp*e + Ki*e_int + Kd*e_der                 #PID controller for omega
     return omega
