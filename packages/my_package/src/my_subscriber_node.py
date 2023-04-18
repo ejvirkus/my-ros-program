@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import os
 import rospy
 from duckietown.dtros import DTROS, NodeType
 from std_msgs.msg import String

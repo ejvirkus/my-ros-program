@@ -2,10 +2,8 @@
 
 #!/usr/bin/env python3
 
-import time
-import math
 import numpy as np 
-import os
+
 import rospy
 from duckietown.dtros import DTROS, NodeType, TopicType, DTParam, ParamType
 from duckietown_msgs.msg import Twist2DStamped, WheelEncoderStamped, WheelsCmdStamped

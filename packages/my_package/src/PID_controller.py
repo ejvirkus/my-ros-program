@@ -3,7 +3,7 @@ from smbus2 import SMBus
 import rospy
 #!/usr/bin/env python3
     
-def apply_controller():
+def apply_controller(t0, t1):
     delta_t = 1
     bus = SMBus(1)
     read = bin(bus.read_byte_data(62, 17))[2:].zfill(8)
@@ -30,14 +30,10 @@ def apply_controller():
     e_int = max(min(e_int,2),-2)                            # anti-windup - preventing the integral error from growing too much       
     e_der = (e - prev_e)/delta_t                       #derivative of the error
     
-
-    # controller coefficients
-    #Kp = rospy.get_param("/p")
-    #Ki = rospy.get_param("/i")
-    #Kd = rospy.get_param("/d")
-    Kp = 0.25
-    Ki = 0.03
-    Kd = 0.5
+    Kp = float(rospy.get_param("/p"))#0.065
+    Ki = float(rospy.get_param("/i"))#0.02
+    Kd = float(rospy.get_param("/d"))#0.6
     
+    delta_t = t0-t1
     omega = Kp*e + Ki*e_int + Kd*e_der                 #PID controller for omega
     return omega
