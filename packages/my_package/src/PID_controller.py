@@ -29,6 +29,7 @@ def apply_controller(t0, t1):
     prev_e = e                                              #Tracking
     e_int = max(min(e_int,2),-2)                            # anti-windup - preventing the integral error from growing too much       
     e_der = (e - prev_e)/delta_t                       #derivative of the error
+    print("prev_e is: ", prev_e)
     
     Kp = float(rospy.get_param("/p"))#0.065
     Ki = float(rospy.get_param("/i"))#0.02

@@ -6,6 +6,7 @@ from default_movement import default_movement
 from Odometry import OdometryNode
 import Obstacle_Avoidance
 import PID_controller
+from sensor_msgs.msg import range
 from duckietown.dtros import DTROS, NodeType
 from duckietown_msgs.msg import WheelsCmdStamped
 
@@ -14,6 +15,7 @@ vehicle_speed = float(rospy.get_param("/maxvel"))#0.25
 
 speed = WheelsCmdStamped()
 rospy_rate = 15
+obstacle_distance = range()
 
 turn_left_at_fork = False
 turn_right_at_fork = False
@@ -51,15 +53,15 @@ class MyPublisherNode(DTROS):
         
         rate = rospy.Rate(1)
         while not rospy.is_shutdown():
-            Obstacle_Avoidance.obstacleavoidance()
-            
-
-            OdometryNode(self)
-            t1 = time.time()
-            speed.vel_left = vehicle_speed  + PID_controller.apply_controller(t0, t1)
-            speed.vel_right = vehicle_speed - PID_controller.apply_controller(t0, t1)
-            #print("omega is: ", PID_controller.apply_controller())
-            self.pub.publish(speed)
+            if obstacle_distance > 2:
+                OdometryNode(self)
+                t1 = time.time()
+                speed.vel_left = vehicle_speed  + PID_controller.apply_controller(t0, t1)
+                speed.vel_right = vehicle_speed - PID_controller.apply_controller(t0, t1)
+                #print("omega is: ", PID_controller.apply_controller())
+                self.pub.publish(speed)
+            else:
+                Obstacle_Avoidance.obstacleavoidance()
 
 
 
