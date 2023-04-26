@@ -28,7 +28,7 @@ def apply_controller(t0, t1):
     prev_int = e_int                                        #integral of the error
     prev_e = e                                              #Tracking
     e_int = max(min(e_int,2),-2)                            # anti-windup - preventing the integral error from growing too much       
-    e_der = (e - prev_e)/delta_t                       #derivative of the error
+    e_der = (e - prev_e)/delta_t                            #derivative of the error
     print("prev_e is: ", prev_e)
     
     Kp = float(rospy.get_param("/p"))#0.065
@@ -36,5 +36,5 @@ def apply_controller(t0, t1):
     Kd = float(rospy.get_param("/d"))#0.6
     
     delta_t = t0-t1
-    omega = Kp*e + Ki*e_int + Kd*e_der                 #PID controller for omega
+    omega = Kp*e + Ki*e_int + Kd*e_der                      #PID controller for omega
     return omega
