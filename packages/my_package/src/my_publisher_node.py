@@ -43,7 +43,7 @@ class MyPublisherNode(DTROS):
         rospy.on_shutdown()
 
     def run(self):
-        t0 = time.time()
+        #t0 = time.time()
         self.line_values = []
         for i, value in enumerate(self.theta_ref):
             if value == '1':
@@ -56,8 +56,8 @@ class MyPublisherNode(DTROS):
         rate = rospy.Rate(1)
         while not rospy.is_shutdown():
             OdometryNode(self)
-            t1 = time.time()
-            e, omega = PID_controller.PIDController.apply_controller(self, self.prev_e, t0, t1)
+            #t1 = time.time()
+            e, omega = PID_controller.PIDController.apply_controller(self, self.prev_e)
             self.prev_e = e
             speed.vel_left = vehicle_speed  + omega
             speed.vel_right = vehicle_speed - omega
