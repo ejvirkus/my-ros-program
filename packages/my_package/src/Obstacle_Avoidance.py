@@ -1,7 +1,7 @@
 import rospy
 from duckietown_msgs.msg import WheelsCmdStamped
 
-rate = rospy.rate(15)
+#rate = rospy.Rate(15)
 speed = WheelsCmdStamped()
 
 def obstacleavoidance(self):

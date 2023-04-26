@@ -6,7 +6,7 @@ from default_movement import default_movement
 from Odometry import OdometryNode
 import Obstacle_Avoidance
 import PID_controller
-from sensor_msgs.msg import range
+from sensor_msgs.msg import Range
 from duckietown.dtros import DTROS, NodeType
 from duckietown_msgs.msg import WheelsCmdStamped
 
@@ -15,7 +15,7 @@ vehicle_speed = float(rospy.get_param("/maxvel"))#0.25
 
 speed = WheelsCmdStamped()
 rospy_rate = 15
-obstacle_distance = range()
+obstacle_distance = Range()
 
 turn_left_at_fork = False
 turn_right_at_fork = False
@@ -30,6 +30,8 @@ class MyPublisherNode(DTROS):
         print("theta.ref is: ", self.theta_ref)
         super(MyPublisherNode, self).__init__(node_name=node_name, node_type=NodeType.GENERIC)
         self.pub = rospy.Publisher("/ejvirkus/wheels_driver_node/wheels_cmd", WheelsCmdStamped, queue_size=10)
+
+        self.prev_e = 0
 
     def on_shutdown(self):  #Seismajäämine juhul kui robot välja lülitub
         rospy.on_shutdown(self.shutdown)
@@ -53,17 +55,14 @@ class MyPublisherNode(DTROS):
         
         rate = rospy.Rate(1)
         while not rospy.is_shutdown():
-            if obstacle_distance > 2:
-                OdometryNode(self)
-                t1 = time.time()
-                speed.vel_left = vehicle_speed  + PID_controller.apply_controller(t0, t1)
-                speed.vel_right = vehicle_speed - PID_controller.apply_controller(t0, t1)
-                #print("omega is: ", PID_controller.apply_controller())
-                self.pub.publish(speed)
-            else:
-                Obstacle_Avoidance.obstacleavoidance()
-
-
+            OdometryNode(self)
+            t1 = time.time()
+            e, omega = PID_controller.PIDController.apply_controller(self, self.prev_e, t0, t1)
+            self.prev_e = e
+            speed.vel_left = vehicle_speed  + omega
+            speed.vel_right = vehicle_speed - omega
+            #print("omega is: ", PID_controller.apply_controller())
+            self.pub.publish(speed)
 
 if __name__ == '__main__':
     node = MyPublisherNode(node_name='my_publisher_node')
