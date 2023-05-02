@@ -34,11 +34,11 @@ class PIDController():
         
         #self.delta_t = t0-t1
         omega = Kp*e + Ki*e_int + Kd*e_der                      #PID controller for omega
-        print("e value is: ", e)
-        print("theta_hat is: ", theta_hat)
-        print("e_int value is: ", e_int)
-        print("e_der value is: ", e_der)
-        print("prev_int value is: ", prev_int)
-        print("delta_t value is: ", self.delta_t)
-        print("prev_e is: ", prev_e)
+        #print("e value is: ", e)
+        #print("theta_hat is: ", theta_hat)
+        #print("e_int value is: ", e_int)
+        #print("e_der value is: ", e_der)
+        #print("prev_int value is: ", prev_int)
+        #print("delta_t value is: ", self.delta_t)
+        #print("prev_e is: ", prev_e)
         return e, omega

@@ -55,14 +55,17 @@ class MyPublisherNode(DTROS):
         
         rate = rospy.Rate(1)
         while not rospy.is_shutdown():
-            OdometryNode(self)
-            #t1 = time.time()
-            e, omega = PID_controller.PIDController.apply_controller(self, self.prev_e)
-            self.prev_e = e
-            speed.vel_left = vehicle_speed  + omega
-            speed.vel_right = vehicle_speed - omega
-            #print("omega is: ", PID_controller.apply_controller())
-            self.pub.publish(speed)
+            if obstacle_distance > Range(2):
+                OdometryNode(self)
+                #t1 = time.time()
+                e, omega = PID_controller.PIDController.apply_controller(self, self.prev_e)
+                self.prev_e = e
+                speed.vel_left = vehicle_speed  + omega
+                speed.vel_right = vehicle_speed - omega
+                #print("omega is: ", PID_controller.apply_controller())
+                self.pub.publish(speed)
+            else:
+                Obstacle_Avoidance.obstacleavoidance()
 
 if __name__ == '__main__':
     node = MyPublisherNode(node_name='my_publisher_node')
