@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import time
 import rospy
 from default_movement import default_movement
 from Odometry import OdometryNode
