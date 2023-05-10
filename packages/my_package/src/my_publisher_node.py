@@ -14,7 +14,6 @@ vehicle_speed = float(rospy.get_param("/maxvel"))#0.25
 
 speed = WheelsCmdStamped()
 rospy_rate = 15
-obstacle_distance = Range()
 
 turn_left_at_fork = False
 turn_right_at_fork = False
@@ -29,8 +28,13 @@ class MyPublisherNode(DTROS):
         print("theta.ref is: ", self.theta_ref)
         super(MyPublisherNode, self).__init__(node_name=node_name, node_type=NodeType.GENERIC)
         self.pub = rospy.Publisher("/ejvirkus/wheels_driver_node/wheels_cmd", WheelsCmdStamped, queue_size=10)
+        self.tof = rospy.Subscriber("/ejvirkus/front_center_tof_driver_node/range", Range, self.callback)
 
+        self.range = 0
         self.prev_e = 0
+
+    def callback(self, data):
+        self.range = data.range
 
     def on_shutdown(self):  #Seismajäämine juhul kui robot välja lülitub
         rospy.on_shutdown(self.shutdown)
@@ -54,7 +58,7 @@ class MyPublisherNode(DTROS):
         
         rate = rospy.Rate(1)
         while not rospy.is_shutdown():
-            if obstacle_distance > Range(2):
+            if self.distance_object
                 OdometryNode(self)
                 #t1 = time.time()
                 e, omega = PID_controller.PIDController.apply_controller(self, self.prev_e)
@@ -63,8 +67,8 @@ class MyPublisherNode(DTROS):
                 speed.vel_right = vehicle_speed - omega
                 #print("omega is: ", PID_controller.apply_controller())
                 self.pub.publish(speed)
-            else:
-                Obstacle_Avoidance.obstacleavoidance()
+            #else:
+                #Obstacle_Avoidance.obstacleavoidance()
 
 if __name__ == '__main__':
     node = MyPublisherNode(node_name='my_publisher_node')

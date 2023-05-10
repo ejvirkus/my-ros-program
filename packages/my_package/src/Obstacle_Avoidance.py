@@ -19,8 +19,9 @@ def obstacleavoidance(self):
                 speed.vel_left = 0.0
                 speed.vel_right = 0.0
                 speed.vel.publish(speed)
-                speed(0.5)
+                sleep
                 while right < 100:
                         speed.vel_left = 0.2
                         speed.vel_right = 0.2
                         speed.vel.publish(speed)
+                        
