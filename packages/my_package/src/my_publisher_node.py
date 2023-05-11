@@ -32,8 +32,8 @@ class MyPublisherNode(DTROS):
         self.ticksL = 0
 
         self.range = 1
-        self.right = 0
-        self.left = 0
+        self.ticksR = 0
+        self.ticksL = 0
 
     def callback(self, data):
         self.range = data.range
@@ -49,50 +49,50 @@ class MyPublisherNode(DTROS):
 
     def obstacle_avoidance(self):
 
-        right_initial = self.right
-        left_initial = self.left
+        right_initial = self.ticksR
+        left_initial = self.ticksL
 
-        right = self.right - right_initial
+        right = self.ticksR - right_initial
         print(right)
-        left = self.left - left_initial
+        left = self.ticksL - left_initial
         print(left)
+        sleep(1)
          
-        while left <= 30:
+        while left <= 60:
             speed.vel_left = 0.2
             speed.vel_right = 0.0
             self.pub.publish(speed)
             sleep(1)
-            self.left = self.left - left_initial
-        if left > 30:
+            left = self.ticksL - left_initial
+        if left > 60:
             speed.vel_left = 0.0
             speed.vel_right = 0.0
             self.pub.publish(speed)
-            sleep(1)
-            while right < 100:
+            while right < 200:
                     speed.vel_left = 0.2
                     speed.vel_right = 0.2
                     self.pub.publish(speed)
-                    right = self.right - right_initial
-            if right >= 100:
-                    right = self.right - right_initial
+                    right = self.ticksR - right_initial
+            if right >= 200:
+                    right = self.ticksR - right_initial
                     speed.vel_left = 0.0
                     speed.vel_right = 0.0
                     self.pub.publish(speed)
                     sleep(1)
-                    while right < 200:
-                            right = self.right - right_initial
+                    while right < 350:
+                            right = self.ticksR - right_initial
                             speed.vel_right = 0.2
                             speed.vel_left = 0.0
                             self.pub.publish(speed)
                             sleep(1)
-                    while right >= 300:
-                            right = self.right - right_initial
+                    while right >= 350 and right < 600:
+                            right = self.ticksR - right_initial
                             speed.vel_right = 0.4
                             speed.vel_left = 0.4
                             self.pub.publish(speed)
                             sleep(1)
-                    if right >= 400:
-                            right = self.right - right_initial
+                    if right >= 600:
+                            right = self.ticksR - right_initial
                             speed.vel_right = 0.25
                             speed.vel_left = 0.25
                             self.pub.publish(speed)
