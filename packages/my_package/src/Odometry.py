@@ -21,8 +21,8 @@ class OdometryNode(DTROS):
         self.delta_ticks_right = 0
         self.rotation_wheel_left = 0
         self.rotation_wheel_right = 0
-        self.seqLeft = rospy.Subscriber('/ejvirkus/left_wheel_encoder_node/tick', WheelEncoderStamped, self.ticks_leftwheel)
-        self.seqRight = rospy.Subscriber('/ejvirkus/right_wheel_encoder_node/tick', WheelEncoderStamped, self.ticks_rightwheel)
+        rospy.Subscriber('/ejvirkus/left_wheel_encoder_node/tick', WheelEncoderStamped, self.ticks_leftwheel)
+        rospy.Subscriber('/ejvirkus/right_wheel_encoder_node/tick', WheelEncoderStamped, self.ticks_rightwheel)
         self.pub = rospy.Publisher('ejvirkus/wheels_driver_node/wheels_cmd',WheelsCmdStamped , queue_size=10)
 
     def ticks_leftwheel(self, data):    #Odomeetria jaoks robotilt väärtuste kutsumine
