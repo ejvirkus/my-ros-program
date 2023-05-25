@@ -58,44 +58,56 @@ class MyPublisherNode(DTROS):
         print(left)
         sleep(1)
          
-        while left <= 60:
+        while left <= 20:
+            print(left)
             speed.vel_left = 0.2
             speed.vel_right = 0.0
             self.pub.publish(speed)
             sleep(1)
             left = self.ticksL - left_initial
-        if left > 60:
+        if left > 20:
+            print(left)
             speed.vel_left = 0.0
             speed.vel_right = 0.0
             self.pub.publish(speed)
-            while right < 200:
+            while right < 50:
+                    print(right)
                     speed.vel_left = 0.2
                     speed.vel_right = 0.2
                     self.pub.publish(speed)
                     right = self.ticksR - right_initial
-            if right >= 200:
+                    print(right)
+            if right >= 50:
+                    print(right)
                     right = self.ticksR - right_initial
                     speed.vel_left = 0.0
                     speed.vel_right = 0.0
                     self.pub.publish(speed)
                     sleep(1)
-                    while right < 350:
+                    print(right)
+                    while right < 70:
+                            print(right)
                             right = self.ticksR - right_initial
                             speed.vel_right = 0.2
                             speed.vel_left = 0.0
                             self.pub.publish(speed)
                             sleep(1)
-                    while right >= 350 and right < 600:
+                            print(right)
+                    while right >= 70 and right < 150:
                             right = self.ticksR - right_initial
+                            print(right)
                             speed.vel_right = 0.4
                             speed.vel_left = 0.4
                             self.pub.publish(speed)
                             sleep(1)
-                    if right >= 600:
+                            print(right)
+                    if right >= 150:
+                            print(right)
                             right = self.ticksR - right_initial
                             speed.vel_right = 0.25
                             speed.vel_left = 0.25
                             self.pub.publish(speed)
+                            print(right)
 
     def shutdown(self):
         speed.vel_right = 0
