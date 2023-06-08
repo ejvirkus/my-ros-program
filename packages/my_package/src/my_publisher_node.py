@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import rospy
-from time import sleep
+import time
 from default_movement import default_movement
 from Odometry import OdometryNode
 import PID_controller
@@ -9,6 +9,7 @@ from sensor_msgs.msg import Range
 from duckietown.dtros import DTROS, NodeType
 from duckietown_msgs.msg import WheelsCmdStamped
 from duckietown_msgs.msg import Twist2DStamped, WheelEncoderStamped, WheelsCmdStamped
+from smbus2 import SMBus
 
 target_sensor_position = 4.5
 vehicle_speed = float(rospy.get_param("/maxvel"))#0.25
@@ -19,6 +20,7 @@ rospy_rate = 15
 class MyPublisherNode(DTROS):
     
     def __init__(self, node_name):
+        self.bus = SMBus(1)
         self.theta_ref = str(0)
         super(MyPublisherNode, self).__init__(node_name=node_name, node_type=NodeType.GENERIC)
         rospy.Subscriber('/ejvirkus/left_wheel_encoder_node/tick', WheelEncoderStamped, self.ticks_leftwheel)
@@ -35,6 +37,9 @@ class MyPublisherNode(DTROS):
         self.ticksR = 0
         self.ticksL = 0
 
+        self.rightvalues = [[0, 1, 1, 1, 1, 1, 1, 1], [0, 0, 1, 1, 1, 1, 1, 1], [0, 0, 0, 1, 1, 1, 1, 1], [0, 0, 0, 0, 1, 1, 1, 1], [0, 0, 0, 0, 0, 1, 1, 1], [0, 0, 0, 0, 0, 0, 1, 1], [0, 0, 0, 0, 0, 0, 0, 1]]
+        self.leftvalues = [[1, 1, 1, 1, 1, 1, 1, 0], [1, 1, 1, 1, 1, 1, 0, 0], [1, 1, 1, 1, 1, 0, 0, 0], [1, 1, 1, 1, 0, 0, 0, 0], [1, 1, 1, 0, 0, 0, 0, 0], [1, 1, 0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0, 0, 0]]
+
     def callback(self, data):
         self.range = data.range
 
@@ -48,66 +53,76 @@ class MyPublisherNode(DTROS):
         rospy.on_shutdown(self.shutdown)
 
     def obstacle_avoidance(self):
+        speed.vel_right = 0
+        speed.vel_left = 0
+        self.pub.publish(speed)
+        time.sleep(1)
+        # Turn 90 degrees right in 0.65 second
+        speed.vel_right = -0.02
+        speed.vel_left = 0.3
+        self.pub.publish(speed)
+        time.sleep(0.6)
+        
+        speed.vel_right = 0
+        speed.vel_left = 0
+        self.pub.publish(speed)
+        time.sleep(1)
+        # Go straight for 2.2 meters
+        speed.vel_right = 0.3
+        speed.vel_left = 0.15
+        self.pub.publish(speed)
+        time.sleep(3)
+        #peed.vel_right = 0
+        #peed.vel_left = 0
+        #elf.pub.publish(speed)
+        #ime.sleep(0.3)
+        # Turn 90 degrees left in 0.65 second
+        #peed.vel_right = 0.3
+        #peed.vel_left = -0.02
+        #elf.pub.publish(speed)
+        #ime.sleep(0.3)
+        #peed.vel_right = 0
+        #peed.vel_left = 0
+        #elf.pub.publish(speed)
+        #ime.sleep(0.3)
+        # Go straight for 2.2 meters
+        #peed.vel_right = 0.3
+        #peed.vel_left = 0.3
+        #elf.pub.publish(speed)
 
-        right_initial = self.ticksR
-        left_initial = self.ticksL
+    def sharp_right(self):
+        print("starting to turn right")
+        speed.vel_right = -0.1
+        speed.vel_left = 0.2
+        self.pub.publish(speed)
+        while sum(self.errorlist) == 0 or self.errorlist in self.rightvalues:
+            #print("Sharp right!")
+            #print("R:", self.theta_ref)
+            temp = self.bus.read_byte_data(62, 17)
+            self.theta_ref = bin(temp)[2:].zfill(8)
+            self.errorlist = list(map(int, self.theta_ref))
+            speed.vel_right = 0.2
+            speed.vel_left = -0.1
+            self.pub.publish(speed)
+            #print("Right: ", self.theta_ref)
+            self.lastturn = 1
 
-        right = self.ticksR - right_initial
-        print(right)
-        left = self.ticksL - left_initial
-        print(left)
-        sleep(1)
-         
-        while left <= 20:
-            print(left)
-            speed.vel_left = 0.2
-            speed.vel_right = 0.0
+    def sharp_left(self):
+        print("starting to turn left")
+        speed.vel_right = -0.1
+        speed.vel_left = 0.2
+        self.pub.publish(speed)
+        while sum(self.errorlist) == 0 or self.errorlist in self.leftvalues:
+            #print("Sharp left!")
+            #print("L:", self.theta_ref)
+            temp = self.bus.read_byte_data(62, 17)
+            self.theta_ref = bin(temp)[2:].zfill(8)
+            self.errorlist = list(map(int, self.theta_ref))
+            speed.vel_right = -0.2
+            speed.vel_left = 0.1
             self.pub.publish(speed)
-            sleep(1)
-            left = self.ticksL - left_initial
-        if left > 20:
-            print(left)
-            speed.vel_left = 0.0
-            speed.vel_right = 0.0
-            self.pub.publish(speed)
-            while right < 50:
-                    print(right)
-                    speed.vel_left = 0.2
-                    speed.vel_right = 0.2
-                    self.pub.publish(speed)
-                    right = self.ticksR - right_initial
-                    print(right)
-            if right >= 50:
-                    print(right)
-                    right = self.ticksR - right_initial
-                    speed.vel_left = 0.0
-                    speed.vel_right = 0.0
-                    self.pub.publish(speed)
-                    sleep(1)
-                    print(right)
-                    while right < 70:
-                            print(right)
-                            right = self.ticksR - right_initial
-                            speed.vel_right = 0.2
-                            speed.vel_left = 0.0
-                            self.pub.publish(speed)
-                            sleep(1)
-                            print(right)
-                    while right >= 70 and right < 150:
-                            right = self.ticksR - right_initial
-                            print(right)
-                            speed.vel_right = 0.4
-                            speed.vel_left = 0.4
-                            self.pub.publish(speed)
-                            sleep(1)
-                            print(right)
-                    if right >= 150:
-                            print(right)
-                            right = self.ticksR - right_initial
-                            speed.vel_right = 0.25
-                            speed.vel_left = 0.25
-                            self.pub.publish(speed)
-                            print(right)
+            #print("Left: ", self.theta_ref)
+            self.lastturn = 2
 
     def shutdown(self):
         speed.vel_right = 0
@@ -127,8 +142,16 @@ class MyPublisherNode(DTROS):
         print("theta_hat is: ", self.theta_hat)
         rate = rospy.Rate(1)
         while not rospy.is_shutdown():
-            if self.range > 0.3:
+            if self.range > 0.25:
                 print(self.range)
+                temp = self.bus.read_byte_data(62, 17)
+                self.theta_ref = bin(temp)[2:].zfill(8)
+                self.errorlist = list(map(int, self.theta_ref))
+                print(self.errorlist)
+                if self.errorlist in self.rightvalues:  #Äkiline parem põõre
+                    self.sharp_right()
+                if self.errorlist in self.leftvalues:    #Äkiline vasak põõre
+                    self.sharp_left()
                 OdometryNode(self)
                 #t1 = time.time()
                 e, omega = PID_controller.PIDController.apply_controller(self, self.prev_e)
